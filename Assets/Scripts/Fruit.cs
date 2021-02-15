@@ -1,52 +1,40 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Fruit : MonoBehaviour
 {
-    private const float GRAVITY = 2.0f;
+    public GameObject fruitSlicedPrefab;
+    public float startForce = 15f;
+    private Rigidbody2D rb;
 
-    public bool IsActive {get;set;}
+    public FruitSpawner spawner;
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        rb.AddForce(transform.up * startForce,ForceMode2D.Impulse);
+    }
 
-    private float VerticalVelocity;
-    private float speed;
-
-    private bool isSliced = false;
-
-    public void LaunchFruit(float VerticalVelocity,float speedX, float startX){
-        IsActive = true;
-        speed = speedX;
-        this.VerticalVelocity = VerticalVelocity;
-        transform.position = new Vector3(startX,0,0);
-        isSliced = false;
-    }    
-
-    private void Update (){
-        if (!IsActive)
-            return;
+    /// <summary>
+    /// Разрезание фруктов
+    /// </summary>
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        Vector3 direction = (collider.transform.position - transform.position).normalized;
+        Quaternion rotation = Quaternion.LookRotation(direction);
         
-        VerticalVelocity -= GRAVITY * Time.deltaTime;
-        transform.position += new Vector3(speed,VerticalVelocity,0) * Time.deltaTime;
+        if (collider.tag == "Blade")
+        {
+            GameObject slicedFruit = Instantiate(fruitSlicedPrefab,transform.position,rotation);
+            Destroy(slicedFruit,3f);
+            spawner.ScoreIncrement();
+            Destroy(gameObject);
+        }
 
-        if (transform.position.y < -1){
-         {
-            IsActive = false;
-            if(!isSliced)
-               GameManage.Instance.LoseLP();
-         }   
+        if (collider.tag == "Barrier")
+        {
+            spawner.LoseLife();
         }
     }
-
-    public void Slice(){
-        if (isSliced)
-            return;
-        if (VerticalVelocity <0.5f)
-            VerticalVelocity = 0.5f;
-
-        speed = speed * 0.5f;
-        isSliced = true;
-    }
-
-
-
 }
