@@ -40,7 +40,7 @@ public class Blade : MonoBehaviour
 
     void UpdateCut()
     {
-        Vector2 newPosition =cam.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 newPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         rb.position = newPosition;
 
         float velocity = (newPosition - previousPosition).magnitude*Time.deltaTime;
