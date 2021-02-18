@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
@@ -16,7 +17,6 @@ public class FruitSpawner : MonoBehaviour
    private int lifepoint;
 
    public Text scoreText;
-   public Text bestText;
    public Image[] pointsImages;
    public GameObject LosePanel;
    public GameObject fruitPrefab;
@@ -25,7 +25,8 @@ public class FruitSpawner : MonoBehaviour
    public float minDelay = .1f;
    public float maxDelay = 1f;
    private bool spawnAllow = true;
-   private void Start()
+  
+   public void Go()
    {
       NewGame();
       StartCoroutine(SpawnFruits());
@@ -38,12 +39,9 @@ public class FruitSpawner : MonoBehaviour
 
    void NewGame()
    {
+      bestscore = PlayerPrefs.GetInt("The best");
       score = 0;
       lifepoint = 3;
-      StreamReader sr = new StreamReader("bestResult.txt");
-      bestText.text = sr.ReadLine();
-      int.TryParse(string.Join("", bestText.text.Where(c => char.IsDigit(c))), out bestscore);
-      sr.Close();
    }
    
    public void LoseLife()
@@ -60,9 +58,7 @@ public class FruitSpawner : MonoBehaviour
    {
       LosePanel.SetActive(true);
       spawnAllow = false;
-      StreamWriter sw = new StreamWriter("bestResult.txt");
-      sw.Write(bestText.text);
-      sw.Close();
+      PlayerPrefs.SetInt("The best", bestscore);
    }
 
    IEnumerator SpawnFruits()
@@ -89,7 +85,6 @@ public class FruitSpawner : MonoBehaviour
       if (score > bestscore)
       {
          bestscore = score;
-         bestText.text = "The best: " + bestscore.ToString();
       }
    }
 }

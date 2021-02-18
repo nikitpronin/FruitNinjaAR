@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 8922044372553712361}
   m_Layer: 0
   m_Name: FruitSpawner
-  m_TagString: Untagged
+  m_TagString: FruitSpawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -142,6 +142,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  LosePanel: {fileID: 0}
   fruitPrefab: {fileID: 6122742257616313128, guid: 32f2aa6eb4b48424da2e864b2b5094a7,
     type: 3}
   spawnPoints:
